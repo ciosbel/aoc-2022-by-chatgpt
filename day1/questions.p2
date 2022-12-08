@@ -1,0 +1,187 @@
+Andrea Boscolo
+Santa's reindeer typically eat regular reindeer food, but they need a lot of magical energy to deliver presents on Christmas. For that, their favorite snack is a special type of star fruit that only grows deep in the jungle. The Elves have brought you on their annual expedition to the grove where the fruit grows.
+
+To supply enough magical energy, the expedition needs to retrieve a minimum of fifty stars by December 25th. Although the Elves assure you that the grove has plenty of fruit, you decide to grab any fruit you see along the way, just in case.
+
+Collect stars by solving puzzles. Two puzzles will be made available on each day in the Advent calendar; the second puzzle is unlocked when you complete the first. Each puzzle grants one star. Good luck!
+
+The jungle must be too overgrown and difficult to navigate in vehicles or access from the air; the Elves' expedition traditionally goes on foot. As your boats approach land, the Elves begin taking inventory of their supplies. One important consideration is food - in particular, the number of Calories each Elf is carrying (your puzzle input).
+
+The Elves take turns writing down the number of Calories contained by the various meals, snacks, rations, etc. that they've brought with them, one item per line. Each Elf separates their own inventory from the previous Elf's inventory (if any) by a blank line.
+
+For example, suppose the Elves finish writing their items' Calories and end up with the following list:
+
+1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000
+This list represents the Calories of the food carried by five Elves:
+
+The first Elf is carrying food with 1000, 2000, and 3000 Calories, a total of 6000 Calories.
+The second Elf is carrying one food item with 4000 Calories.
+The third Elf is carrying food with 5000 and 6000 Calories, a total of 11000 Calories.
+The fourth Elf is carrying food with 7000, 8000, and 9000 Calories, a total of 24000 Calories.
+The fifth Elf is carrying one food item with 10000 Calories.
+In case the Elves get hungry and need extra snacks, they need to know which Elf to ask: they'd like to know how many Calories are being carried by the Elf carrying the most Calories. In the example above, this is 24000 (carried by the fourth Elf).
+
+Find the Elf carrying the most Calories. How many total Calories is that Elf carrying?
+
+To solve this puzzle, you need to find the Elf with the most Calories in their inventory. To do this, you need to go through the list of food items, keeping track of the total Calories for each Elf. Whenever you encounter a blank line, you know that the next food items belong to a new Elf.
+
+For example, using the list from the puzzle description:
+
+Copy code
+1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000
+You would start by adding 1000, 2000, and 3000 to the first Elf's total Calories, for a total of 6000. Then, you encounter a blank line, so you know that the next item belongs to a new Elf. The second Elf is carrying one food item with 4000 Calories, so their total is 4000.
+
+Next, you encounter another blank line, so you know that the next items belong to a new Elf. This Elf is carrying food with 5000 and 6000 Calories, for a total of 11000. Then, you encounter another blank line, and you know that the next items belong to a new Elf. This Elf is carrying food with 7000, 8000, and 9000 Calories, for a total of 24000. Finally, you encounter the last food item, which belongs to the fifth Elf and has 10000 Calories.
+
+To find the Elf carrying the most Calories, you need to keep track of the maximum total Calories seen so far. In this case, the maximum is 24000, which is carried by the fourth Elf. Therefore, the answer to the puzzle is 24000.
+
+
+
+
+Andrea Boscolo
+Right. Can you provide a correct javascript implementation for it?
+
+Sure, here's one way to solve this puzzle in JavaScript:
+
+Copy code
+const input = `1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000`;
+
+const calories = input.split('\n');
+
+let maxCalories = 0;
+let currentElfCalories = 0;
+
+for (const calorie of calories) {
+  if (calorie === '') {
+    // We've reached the end of an Elf's inventory, so we update the maximum
+    // Calories seen so far if necessary, and reset the current Elf's total.
+    maxCalories = Math.max(maxCalories, currentElfCalories);
+    currentElfCalories = 0;
+  } else {
+    // We've found a food item, so we add its Calories to the current Elf's total.
+    currentElfCalories += parseInt(calorie, 10);
+  }
+}
+
+// At the end of the loop, the final Elf's total will not have been checked against
+// the maximum Calories, so we need to check one last time.
+maxCalories = Math.max(maxCalories, currentElfCalories);
+
+console.log(`The Elf carrying the most Calories has ${maxCalories} total Calories.`);
+This code first splits the input into an array of food items (separated by newlines), and then iterates over each item. For each item, it checks if the item is a blank line (indicating the end of an Elf's inventory), and updates the maximum Calories seen so far and the current Elf's total Calories accordingly. Finally, it prints out the Elf carrying the most Calories and their total Calories.
+
+
+
+
+Andrea Boscolo
+Correct. Now the puzzle continues as follows.
+
+By the time you calculate the answer to the Elves' question, they've already realized that the Elf carrying the most Calories of food might eventually run out of snacks.
+
+To avoid this unacceptable situation, the Elves would instead like to know the total Calories carried by the top three Elves carrying the most Calories. That way, even if one of those Elves runs out of snacks, they still have two backups.
+
+In the example above, the top three Elves are the fourth Elf (with 24000 Calories), then the third Elf (with 11000 Calories), then the fifth Elf (with 10000 Calories). The sum of the Calories carried by these three elves is 45000.
+
+Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?
+
+To find the top three Elves carrying the most Calories, you can use a similar approach to the one used in the previous puzzle. The main difference is that, instead of keeping track of just the maximum Calories seen so far, you need to keep track of the top three Elves and their total Calories.
+
+In JavaScript, you can use an array and the sort method to do this. Here's one way to solve this puzzle using this approach:
+
+Copy code
+const input = `1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000`;
+
+const calories = input.split('\n');
+
+// We'll use this array to keep track of the top three Elves and their total Calories.
+const topElves = [];
+
+let currentElfCalories = 0;
+
+for (const calorie of calories) {
+  if (calorie === '') {
+    // We've reached the end of an Elf's inventory, so we add the current Elf's
+    // total Calories to the topElves array and sort the array in descending order
+    // by Calories.
+    topElves.push({ calories: currentElfCalories });
+    topElves.sort((a, b) => b.calories - a.calories);
+
+    // Then, we keep only the top three Elves in the array, discarding the rest.
+    topElves.splice(3);
+
+    // Finally, we reset the current Elf's total Calories.
+    currentElfCalories = 0;
+  } else {
+    // We've found a food item, so we add its Calories to the current Elf's total.
+    currentElfCalories += parseInt(calorie, 10);
+  }
+}
+
+// At the end of the loop, the final Elf's total will not have been checked against
+// the maximum Calories, so we need to check one last time.
+topElves.push({ calories: currentElfCalories });
+topElves.sort((a, b) => b.calories - a.calories);
+topElves.splice(3);
+
+// We can now calculate the total Calories carried by the top three Elves.
+const totalCalories = topElves.reduce((sum, elf) => sum + elf.calories, 0);
+
+console.log(`The top three Elves carrying the most Calories have ${totalCalories} total Calories.`);
+This code works in the same way as the previous solution, but it keeps track of the top three Elves and their total Calories instead of just the maximum Calories seen so far. It does this by adding the current Elf's total Calories to the topElves array and sorting the array in descending order by Calories. Then, it keeps only the top three Elves in the array, discarding the rest. Finally, it calculates the total Calories carried by the top three Elves and prints the result.
+
+Andrea Boscolo
+This is correct. Thank you
+
+You're welcome! Let me know if you have any other questions.
