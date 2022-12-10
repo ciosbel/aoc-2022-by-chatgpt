@@ -1,0 +1,64 @@
+Andrea Boscolo
+The quiz assigment has changes as follows. Can you provide an implementation?
+
+It seems like there is still quite a bit of duplicate work planned. Instead, the Elves would like to know the number of pairs that overlap at all.
+
+In the above example, the first two pairs (2-4,6-8 and 2-3,4-5) don't overlap, while the remaining four pairs (5-7,7-9, 2-8,3-7, 6-6,4-6, and 2-6,4-8) do overlap:
+
+5-7,7-9 overlaps in a single section, 7.
+2-8,3-7 overlaps all of the sections 3 through 7.
+6-6,4-6 overlaps in a single section, 6.
+2-6,4-8 overlaps in sections 4, 5, and 6.
+So, in this example, the number of overlapping assignment pairs is 4.
+
+In how many assignment pairs do the ranges overlap?
+
+Here is an implementation in JavaScript for the problem described above, where the range pairs are read from a file and the number of pairs that overlap at all is calculated:
+
+Copy code
+import { readFileSync } from 'fs';
+
+function findOverlappingRanges(rangePairs) {
+  let overlaps = 0;
+
+  // Loop through each pair of ranges
+  for (let i = 0; i < rangePairs.length; i++) {
+    const range1 = rangePairs[i][0];
+    const range2 = rangePairs[i][1];
+
+    // Check if range1 and range2 overlap
+    if (range1.start <= range2.end && range1.end >= range2.start) {
+      overlaps++;
+    }
+  }
+
+  return overlaps;
+}
+
+// Read the input file and parse the range pairs
+const input = readFileSync('input.txt', 'utf8');
+const rangePairs = input.split('\n').map(line => {
+  const ranges = line.split(',');
+  return ranges.map(range => {
+    const [start, end] = range.split('-');
+    return { start: parseInt(start), end: parseInt(end) };
+  });
+});
+
+const overlaps = findOverlappingRanges(rangePairs);
+console.log(overlaps);
+The function findOverlappingRanges is the same as in the previous responses, except that it checks if range1 and range2 overlap instead of checking if one range fully contains the other. This ensures that the number of pairs that overlap at all is calculated.
+
+In the example given, the input is an array of range pairs assigned to a single Elf. The function returns 4, as there are 4 pairs of ranges that overlap at all.
+
+To run this implementation, save the code to a file named solution.js, save the input data to a file named input.txt, and run the following command:
+
+Copy code
+node solution.js
+The output will be the number of overlapping pairs found in the input data.
+
+
+
+Andrea Boscolo
+Perfect. Thanks
+You're welcome! I'm glad I could help. Let me know if you have any other questions.
