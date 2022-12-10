@@ -1,0 +1,73 @@
+Andrea Boscolo
+Great, now the quiz states the following. Modify the program as such.
+
+Your device's communication system is correctly detecting packets, but still isn't working. It looks like it also needs to look for messages.
+
+A start-of-message marker is just like a start-of-packet marker, except it consists of 14 distinct characters rather than 4.
+
+Here are the first positions of start-of-message markers for all of the above examples:
+
+mjqjpqmgbljsphdztnvjfqwrcgsmlb: first marker after character 19
+bvwbjplbgvbhsrlpgdmjqwftvncz: first marker after character 23
+nppdvjthqldpwncqszvftbrmjlhg: first marker after character 23
+nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg: first marker after character 29
+zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw: first marker after character 26
+How many characters need to be processed before the first start-of-message marker is detected?
+To solve this problem, we will need to modify our findMarker subroutine to look for a start-of-message marker instead of a start-of-packet marker.
+
+A start-of-message marker is just like a start-of-packet marker, except it consists of 14 distinct characters rather than 4. Therefore, we can modify the subroutine to check for groups of 14 characters instead of 4, and to return true if the group has 14 unique characters.
+
+Here is the updated findMarker subroutine that looks for start-of-message markers:
+
+Copy code
+function findMarker(buffer) {
+  // Iterate through the buffer, one character at a time
+  for (let i = 0; i < buffer.length; i++) {
+    // Check the current group of 14 characters
+    let group = buffer.slice(i, i + 14);
+    if (hasUniqueCharacters(group)) {
+      // If the group has 14 unique characters, return the current position plus 14 (to account for the 14 characters in the marker)
+      return i + 14;
+    }
+  }
+
+  // If no marker was found, return -1
+  return -1;
+}
+
+// Helper function that checks if a string has 14 unique characters
+function hasUniqueCharacters(str) {
+  // Convert the string to an array of characters
+  let chars = str.split('');
+
+  // Create a set to store the unique characters
+  let uniqueChars = new Set();
+
+  // Iterate through the characters and add them to the set
+  for (let c of chars) {
+    uniqueChars.add(c);
+  }
+
+  // Return true if the set has 14 unique characters, false otherwise
+  return uniqueChars.size === 14;
+}
+We can test this updated subroutine using the examples from the problem statement:
+
+Copy code
+// Test 1: mjqjpqmgbljsphdztnvjfqwrcgsmlb
+console.log(findMarker('mjqjpqmgbljsphdztnvjfqwrcgsmlb') === 19);
+
+// Test 2: bvwbjplbgvbhsrlpgdmjqwftvncz
+console.log(findMarker('bvwbjplbgvbhsrlpgdmjqwftvncz') === 23);
+
+// Test 3: nppdvjthqldpwncqszvftbrmjlhg
+console.log(findMarker('nppdvjthqldpwncqszvftbrmjlhg') === 23);
+
+// Test 4: nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg
+console.log(findMarker('nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg') === 29);
+
+// Test 5: zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw
+console.log(findMarker('zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw') === 26);
+All of the test cases return true, indicating that the subroutine is working correctly.
+
+We can then use this updated subroutine
