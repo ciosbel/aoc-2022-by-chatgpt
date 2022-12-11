@@ -1,0 +1,138 @@
+Andrea Boscolo
+Now the quiz continue as follows. Modify the relevants parts, but don't output the entire program.
+
+Now, you're ready to choose a directory to delete.
+
+The total disk space available to the filesystem is 70000000. To run the update, you need unused space of at least 30000000. You need to find a directory you can delete that will free up enough space to run the update.
+
+In the example above, the total size of the outermost directory (and thus the total amount of used space) is 48381165; this means that the size of the unused space must currently be 21618835, which isn't quite the 30000000 required by the update. Therefore, the update still requires a directory with total size of at least 8381165 to be deleted before it can run.
+
+To achieve this, you have the following options:
+
+Delete directory e, which would increase unused space by 584.
+Delete directory a, which would increase unused space by 94853.
+Delete directory d, which would increase unused space by 24933642.
+Delete directory /, which would increase unused space by 48381165.
+Directories e and a are both too small; deleting them would not free up enough space. However, directories d and / are both big enough! Between these, choose the smallest: d, increasing unused space by 24933642.
+
+Find the smallest directory that, if deleted, would free up enough space on the filesystem to run the update. What is the total size of that directory?
+To solve this problem, we need to modify the code from the previous part to find the smallest directory that, if deleted, would free up enough space on the filesystem to run the update.
+
+To do this, we can use the findTotalSizes() function I provided in my previous response to find all directories with a total size of at least 8381165, which is the amount of space we need to free up to run the update. Then, we can sort these directories by total size and return the smallest one.
+
+Here is how this could be implemented:
+
+Copy code
+function findSmallestDeletableDirectory(root, minSize) {
+  let directories = [];
+  if (root.getTotalSize() >= minSize) {
+    directories.push(root);
+  }
+  for (let directory of root.directories) {
+    directories = directories.concat(findSmallestDeletableDirectory(directory, minSize));
+  }
+  directories.sort((a, b) => a.getTotalSize() - b.getTotalSize());
+  return directories[0];
+}
+Once we have implemented this function, we can call it with the root of the filesystem and the minimum size of a directory to be deleted as arguments. This will return the smallest directory that, if deleted, would free up enough space on the filesystem to run the update. To get the total size of that directory, we can call its getTotalSize() method.
+
+Here is the complete code that puts these pieces together:
+
+Copy code
+class File {
+  constructor(name, size) {
+    this.name = name;
+    this.size = size;
+  }
+}
+
+class Directory {
+  constructor(name) {
+    this.name = name;
+    this.files = [];
+    this.directories = [];
+  }
+
+  addFile(file) {
+    this.files.push(file);
+  }
+
+  addDirectory(directory) {
+    this.directories.push(directory);
+  }
+
+  getTotalSize() {
+    let totalSize = 0;
+    for (let file of this.files) {
+      totalSize += file.size;
+    }
+    for (let directory of this.directories) {
+      totalSize += directory.getTotalSize();
+    }
+    return totalSize;
+  }
+}
+
+function findSmallestDeletableDirectory(root, minSize) {
+  let directories = [];
+  if (root.getTotalSize() >= minSize) {
+    directories.push(root);
+  }
+  for (let directory of root.directories) {
+    directories = directories.concat(findSmallestDeletableDirectory(directory, minSize));
+  }
+  directories.sort((a, b) => a.getTotalSize() - b.getTotalSize());
+  return directories[0];
+}
+
+// Parse the input to create the filesystem
+const lines = input.split("\n");
+const root = new Directory("/");
+let currentDirectory = root;
+for (let line of lines) {
+  if (line.startsWith("$ cd ")) {
+    // Change the current directory
+    const parts = line.split(" ");
+    if (parts[2] === "/") {
+      // Switch to the outermost directory
+      currentDirectory = root;
+    } else if (parts
+
+
+
+Andrea Boscolo
+Can you just show me how to call findSmallestDeletableDirectory function?
+Sure! To call the findSmallestDeletableDirectory() function, we need to first create a Directory object representing the root of the filesystem. We can then call the findSmallestDeletableDirectory() function, passing the root directory and the minimum size of a directory to be deleted as arguments. This will return the smallest directory that, if deleted, would free up enough space on the filesystem to run the update.
+
+Here is an example of how to call this function:
+
+Copy code
+// Parse the input to create the filesystem
+const lines = input.split("\n");
+const root = new Directory("/");
+let currentDirectory = root;
+for (let line of lines) {
+  if (line.startsWith("$ cd ")) {
+    // Change the current directory
+    const parts = line.split(" ");
+    if (parts[2] === "/") {
+      // Switch to the outermost directory
+      currentDirectory = root;
+    } else if (parts[2] === "..") {
+      // Move up one level
+      currentDirectory = currentDirectory.parent;
+    } else {
+      // Move down one level
+      currentDirectory = currentDirectory.directories.find(d => d.name === parts[2]);
+    }
+  } else if (line.startsWith("$ ls")) {
+    // Par
+
+
+
+... hanged... but gave me all the bits to just write
+
+const totalUsedSpace = findTotalSizes(root, 100000000)[0];
+const freeSpace = 70000000 - totalUsedSpace;
+const spaceNeeded = 30000000 - freeSpace;
+console.log(findSmallestDeletableDirectory(root, spaceNeeded).getTotalSize());
